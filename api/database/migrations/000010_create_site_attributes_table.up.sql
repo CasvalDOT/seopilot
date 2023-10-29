@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS site_attributes (
+  id SERIAL PRIMARY KEY,
+  site_id INTEGER NOT NULL REFERENCES sites(id),
+  name VARCHAR(255) NOT NULL,
+  value TEXT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);

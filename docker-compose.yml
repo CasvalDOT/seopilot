@@ -1,0 +1,94 @@
+version: "3.8"
+services:
+  dashboard:
+    image: seopilot/dashboard:latest
+    build:
+      context: ./dashboard
+      target: dev
+    container_name: dashboard
+    restart: always
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    labels:
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.rule=Host(`dashboard.seopilot.dev`)
+      - traefik.http.routers.dashboard.tls=true
+      - traefik.port=3000
+      - traefik.enable=true
+    volumes:
+      - ./dashboard:/app
+    extra_hosts:
+      - "api.seopilot.dev:10.5.0.4"
+    networks:
+      proxy:
+        ipv4_address: "10.5.0.2"
+  api:
+    image: seopilot/api:latest
+    build:
+      context: ./api
+      target: dev
+    container_name: api
+    restart: always
+    environment:
+      - PORT=8081
+    labels:
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.routers.api.rule=Host(`api.seopilot.dev`)
+      - traefik.http.routers.api.tls=true
+      - traefik.port=8081
+      - traefik.enable=true
+    volumes:
+      - ./api:/app
+      - ./api/database/migrations:/app
+    depends_on:
+      - db
+    networks:
+      proxy:
+        ipv4_address: "10.5.0.3"
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    networks:
+      proxy:
+        ipv4_address: "10.5.0.5"
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: always
+    ports:
+      - 80:80
+      - 8080:8080
+      - 443:443
+    volumes:
+      - ./certs:/etc/traefik/certs
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik:/etc/traefik
+    networks:
+      proxy:
+        ipv4_address: "10.5.0.4"
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      proxy:
+        ipv4_address: "10.5.0.6"
+networks:
+  proxy:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.5.0.0/24
