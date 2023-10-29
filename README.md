@@ -1,6 +1,6 @@
 # Seopilot
 
-This is a monorepo app
+This is the **Seopilot** project.
 
 ## Requirements
 
