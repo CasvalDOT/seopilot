@@ -10,6 +10,11 @@ Here are the requirements:
 - docker
 
 ```bash
+# Edit your local /etc/hosts file
+# Add the following lines
+sudo echo "127.0.0.1 dashboard.seopilot.dev" >> /etc/hosts
+sudo echo "127.0.0.1 api.seopilot.dev" >> /etc/hosts
+
 # Install certificates for enable SSL via traefik
 mkcert -install
 
