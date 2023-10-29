@@ -70,7 +70,7 @@ func (u *authUsecase) ForgotPassword(email string) error {
 func (u *authUsecase) AuthUser(email, password string) (string, time.Time, error) {
 	user, err := u.userRepo.GetByEmail(email)
 	if err != nil {
-		return "", time.Now(), errors.New(ae.ErrorKeyUserNotFound)
+		return "", time.Now(), errors.New(ae.ErrorKeyAuthEmailOrPasswordIncorrent)
 	}
 
 	isEqual, err := u.authService.VerifyPasswordHash(user.Password, password)
