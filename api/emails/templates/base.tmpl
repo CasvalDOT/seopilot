@@ -1,0 +1,43 @@
+{{define "base"}}
+<html>
+  <head>
+    <title>{{.Data.Subject}}</title>
+  </head>
+
+  <table bgcolor="#f9f9f9" cellpadding="20" cellspacing="20">
+    <tbody>
+      <tr>
+        <td colspan="100" align="center">
+          <!-- Content -->
+          <table bgcolor="#ffffff" cellpadding="20" cellspacing="20">
+            <thead>
+              <tr>
+                <th>
+                  <br />
+                    <h1>{{.Data.Subject}}</h1>
+                  <br />
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                {{template "body" .}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>
+          {{.AppName}} {{.Year}}
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</html>
+{{end}}
